@@ -2,10 +2,10 @@ package me.davipccunha.tests.signshop.listener;
 
 import lombok.RequiredArgsConstructor;
 import me.davipccunha.tests.signshop.SignShopPlugin;
-import me.davipccunha.tests.signshop.api.ShopType;
+import me.davipccunha.tests.signshop.api.model.ShopType;
 import me.davipccunha.tests.signshop.cache.ShopCache;
-import me.davipccunha.tests.signshop.api.Shop;
-import me.davipccunha.tests.signshop.api.ShopLocation;
+import me.davipccunha.tests.signshop.api.model.Shop;
+import me.davipccunha.tests.signshop.api.model.ShopLocation;
 import me.davipccunha.tests.signshop.util.InventoryUtil;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;

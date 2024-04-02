@@ -9,7 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class IndirectShopDestroyer {
+    /* Known problem: There are too many specific situations where an AdminShop being indirectly destroyed is not detected.
+    Example:
+        Shop attached to a Sand Block that falls
+        Shop attached to a TNT that is ignited
+        Shop attached to Cake that is eaten
 
+    Since it only happens with an AdminShop in very specific conditions, I might overlook some of these events.
+        Problem caused: The shop is not removed from the cache.
+        Workaround: When placing/moving a block, verify if its location is in the cache. If so, remove it.
+    */
     public static void indirectShopDelete(Block block, ShopCache cache) {
         for (Block attachedSign : getAttachedSigns(block))
             cache.remove(attachedSign.getLocation());
@@ -28,7 +37,11 @@ public class IndirectShopDestroyer {
 
         for (BlockFace direction : DIRECTIONS) {
             Block adjacentBlock = block.getRelative(direction);
-            if (adjacentBlock.getState() instanceof Sign) adjacentSigns.add(adjacentBlock);
+            if (adjacentBlock.getState() instanceof Sign) {
+                BlockFace attachedFace = ((org.bukkit.material.Sign) adjacentBlock.getState().getData()).getAttachedFace();
+                if (attachedFace == direction.getOppositeFace())
+                    adjacentSigns.add(adjacentBlock);
+            }
         }
 
         return adjacentSigns;

@@ -2,9 +2,9 @@ package me.davipccunha.tests.signshop.listener;
 
 import lombok.RequiredArgsConstructor;
 import me.davipccunha.tests.signshop.SignShopPlugin;
-import me.davipccunha.tests.signshop.api.Shop;
-import me.davipccunha.tests.signshop.api.ShopLocation;
-import me.davipccunha.tests.signshop.api.ShopType;
+import me.davipccunha.tests.signshop.api.model.Shop;
+import me.davipccunha.tests.signshop.api.model.ShopLocation;
+import me.davipccunha.tests.signshop.api.model.ShopType;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -32,6 +32,7 @@ public class SignChangeListener implements Listener {
 
         final boolean isWallSign = ((Sign) block.getState().getData()).isWallSign();
         final boolean isChestBelow = block.getLocation().clone().add(0, -1, 0).getBlock().getState() instanceof Chest;
+
 
         final BlockFace signBack = ((Sign) block.getState().getData()).getAttachedFace();
         final boolean isAttachedToChest = block.getRelative(signBack).getState() instanceof Chest;

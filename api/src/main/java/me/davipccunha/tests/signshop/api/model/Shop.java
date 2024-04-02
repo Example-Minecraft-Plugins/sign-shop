@@ -1,5 +1,6 @@
-package me.davipccunha.tests.signshop.api;
+package me.davipccunha.tests.signshop.api.model;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,9 +20,22 @@ public class Shop {
     private final int itemID;
     private final short itemData;
     private final int sellAmount, buyAmount;
+
+    @Setter(AccessLevel.NONE)
     private double sellPrice, buyPrice;
+
     private final ShopType type;
     private final String owner;
+
+    public void setSellPrice(double sellPrice) {
+        this.sellPrice = sellPrice;
+        this.updateSign();
+    }
+
+    public void setBuyPrice(double buyPrice) {
+        this.buyPrice = buyPrice;
+        this.updateSign();
+    }
 
     public boolean isAdminShop() {
         return this.type == ShopType.ADMIN;
@@ -69,11 +83,11 @@ public class Shop {
         if (!validSell && !validBuy) return;
 
         if (validSell) {
-            sellLine.append("§aC: §0").append(sellAmount).append(" / ").append(sellPrice).append("¢");
+            sellLine.append("§aC: §0").append(sellAmount).append(" / ").append(String.format("%.2f", sellPrice)).append("¢");
         }
 
         if (validBuy) {
-            buyLine.append("§cV: §0").append(buyAmount).append(" / ").append(buyPrice).append("¢");
+            buyLine.append("§cV: §0").append(buyAmount).append(" / ").append(String.format("%.2f", buyPrice)).append("¢");
         }
 
         Sign sign = (Sign) signState;
@@ -114,7 +128,7 @@ public class Shop {
 
         player.getInventory().addItem(itemStack);
 
-        String message = "§aVocê comprou " + amount + " " + ItemName.valueOf(itemStack) + " por " + finalPrice + " coins.";
+        String message = "§aVocê comprou " + amount + " " + ItemName.valueOf(itemStack) + " por " + String.format("%.2f", finalPrice) + " coins.";
         player.sendMessage(message);
     }
 
@@ -143,7 +157,7 @@ public class Shop {
 
         player.getInventory().removeItem(itemStack);
 
-        String message = "§aVocê vendeu " + amount + " " + ItemName.valueOf(itemStack) + " por " + finalPrice + " coins.";
+        String message = "§aVocê vendeu " + amount + " " + ItemName.valueOf(itemStack) + " por " + String.format("%.2f", finalPrice) + " coins.";
         player.sendMessage(message);
     }
 

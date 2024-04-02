@@ -2,7 +2,7 @@ package me.davipccunha.tests.signshop;
 
 import lombok.Getter;
 import me.davipccunha.tests.economy.api.EconomyAPI;
-import me.davipccunha.tests.signshop.api.SignShopAPI;
+import me.davipccunha.tests.signshop.api.model.SignShopAPI;
 import me.davipccunha.tests.signshop.cache.ShopCache;
 import me.davipccunha.tests.signshop.listener.*;
 import me.davipccunha.tests.signshop.provider.SignShopProvider;
@@ -34,7 +34,11 @@ public class SignShopPlugin extends JavaPlugin {
                 new BlockBreakListener(this),
                 new PlayerInteractListener(this),
                 new EntityExplodeListener(this),
-                new BlockBurnListener(this)
+                new BlockBurnListener(this),
+                new EntityChangeBlockListener(this),
+                new BlockPlaceListener(this),
+                new BlockPistonListener(this),
+                new BlockFadeListener(this)
         );
 
         Bukkit.getServicesManager().register(SignShopAPI.class, new SignShopProvider(shopCache), this, ServicePriority.Normal);

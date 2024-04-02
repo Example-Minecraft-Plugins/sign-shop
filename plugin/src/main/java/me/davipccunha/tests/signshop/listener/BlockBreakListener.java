@@ -2,11 +2,10 @@ package me.davipccunha.tests.signshop.listener;
 
 import lombok.RequiredArgsConstructor;
 import me.davipccunha.tests.signshop.SignShopPlugin;
-import me.davipccunha.tests.signshop.api.ShopLocation;
+import me.davipccunha.tests.signshop.api.model.ShopLocation;
 import me.davipccunha.tests.signshop.cache.ShopCache;
 import me.davipccunha.tests.signshop.listener.util.IndirectShopDestroyer;
 import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -18,17 +17,16 @@ public class BlockBreakListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     private void onBlockBreak(BlockBreakEvent event) {
-        Block block = event.getBlock();
+        final Block block = event.getBlock();
         if (block == null) return;
 
-        IndirectShopDestroyer.indirectShopDelete(block, plugin.getShopCache());
-
-        if (!(block.getState() instanceof Sign)) return;
-
         final ShopCache cache = plugin.getShopCache();
-
         ShopLocation shopLocation = new ShopLocation(block.getLocation());
 
         if (cache.has(shopLocation)) event.setCancelled(true);
+
+        if (!event.isCancelled()) {
+            IndirectShopDestroyer.indirectShopDelete(block, plugin.getShopCache());
+        }
     }
 }

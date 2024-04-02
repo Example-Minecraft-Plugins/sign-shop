@@ -1,17 +1,11 @@
-package me.davipccunha.tests.signshop.api;
+package me.davipccunha.tests.signshop.api.model;
 
 import java.util.Collection;
 
 public interface SignShopAPI {
     Shop getShop(ShopLocation location);
 
-    void deleteShop(ShopLocation location, boolean breakBlock);
-
-    void updateSign(ShopLocation location);
-
-    double getBuyPrice(ShopLocation location);
-
-    double getSellPrice(ShopLocation location);
+    void deleteShop(ShopLocation location);
 
     void setBuyPrice(ShopLocation location, double price);
 

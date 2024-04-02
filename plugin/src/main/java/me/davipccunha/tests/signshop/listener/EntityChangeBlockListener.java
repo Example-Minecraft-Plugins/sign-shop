@@ -7,20 +7,19 @@ import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityExplodeEvent;
-
-import java.util.List;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 
 @RequiredArgsConstructor
-public class EntityExplodeListener implements Listener {
+public class EntityChangeBlockListener implements Listener {
     private final SignShopPlugin plugin;
 
     @EventHandler(priority = EventPriority.LOWEST)
-    private void onBlockExplode(EntityExplodeEvent event) {
-        List<Block> explodedBlocks = event.blockList();
+    private void onEntityChangeBlock(EntityChangeBlockEvent event) {
+        final Block block = event.getBlock();
+        if (block == null) return;
 
-        for (Block block : explodedBlocks)
-            if (!event.isCancelled())
-                IndirectShopDestroyer.indirectShopDelete(block, plugin.getShopCache());
+        if (!event.isCancelled()) {
+            IndirectShopDestroyer.indirectShopDelete(block, plugin.getShopCache());
+        }
     }
 }
