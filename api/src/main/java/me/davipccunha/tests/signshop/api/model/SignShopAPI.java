@@ -12,4 +12,6 @@ public interface SignShopAPI {
     void setSellPrice(ShopLocation location, double price);
 
     Collection<Shop> getAdminShops();
+
+    void updateAdminShops();
 }

@@ -51,4 +51,9 @@ public class SignShopProvider implements SignShopAPI {
     public Collection<Shop> getAdminShops() {
         return cache.getAdminShops();
     }
+
+    @Override
+    public void updateAdminShops() {
+        this.getAdminShops().forEach(Shop::updateSign);
+    }
 }

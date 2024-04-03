@@ -21,6 +21,7 @@ public class SignShopPlugin extends JavaPlugin {
     public void onEnable() {
         this.init();
         getLogger().info("Sign Shop plugin loaded!");
+        this.shopCache.removeGhostShops();
     }
 
     public void onDisable() {

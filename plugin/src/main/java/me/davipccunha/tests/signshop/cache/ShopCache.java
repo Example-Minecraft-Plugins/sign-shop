@@ -98,4 +98,11 @@ public class ShopCache {
     public Collection<Shop> getAdminShops() {
         return this.getShops().stream().filter(Shop::isAdminShop).collect(Collectors.toList());
     }
+
+    public void removeGhostShops() {
+        for (Shop shop : this.getAdminShops()) {
+            if (shop.getShopSign() == null)
+                this.remove(shop.getLocation());
+        }
+    }
 }

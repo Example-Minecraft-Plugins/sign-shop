@@ -2,15 +2,16 @@ package me.davipccunha.tests.signshop.listener;
 
 import lombok.RequiredArgsConstructor;
 import me.davipccunha.tests.signshop.SignShopPlugin;
-import me.davipccunha.tests.signshop.api.model.ShopType;
-import me.davipccunha.tests.signshop.cache.ShopCache;
 import me.davipccunha.tests.signshop.api.model.Shop;
 import me.davipccunha.tests.signshop.api.model.ShopLocation;
+import me.davipccunha.tests.signshop.api.model.ShopType;
+import me.davipccunha.tests.signshop.cache.ShopCache;
 import me.davipccunha.tests.signshop.util.InventoryUtil;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -19,7 +20,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 public class PlayerInteractListener implements Listener {
     private final SignShopPlugin plugin;
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     private void onPlayerInteract(PlayerInteractEvent event) {
         Action action = event.getAction();
         if (action != Action.LEFT_CLICK_BLOCK && action != Action.RIGHT_CLICK_BLOCK) return;

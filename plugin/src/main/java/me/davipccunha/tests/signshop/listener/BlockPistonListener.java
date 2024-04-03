@@ -18,9 +18,11 @@ public class BlockPistonListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     private void onBlockExtendPiston(BlockPistonExtendEvent event) {
+        // We check if the piston pushed a block to a ghost shop location
         Block targetBlock = event.getBlock().getRelative(event.getDirection(), 2);
         plugin.getShopCache().remove(targetBlock.getLocation());
 
+        // We check if the piston extending will break a shop
         List<Block> affectedBlocks = event.getBlocks();
         for (Block block : affectedBlocks) {
             if (!event.isCancelled())
@@ -30,6 +32,7 @@ public class BlockPistonListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     private void onBlockRetractPiston(BlockPistonRetractEvent event) {
+        // We check if the piston pulled a block to a ghost shop location
         if (!event.isSticky()) return;
 
         Block targetBlock = event.getBlock().getRelative(event.getDirection().getOppositeFace());

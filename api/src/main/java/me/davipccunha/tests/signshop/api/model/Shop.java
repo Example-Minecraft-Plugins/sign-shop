@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.davipccunha.tests.economy.api.EconomyAPI;
 import me.davipccunha.tests.economy.api.EconomyType;
+import me.davipccunha.tests.signshop.api.event.AdminShopBuyEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.block.*;
 import org.bukkit.entity.Player;
@@ -39,6 +40,10 @@ public class Shop {
 
     public boolean isAdminShop() {
         return this.type == ShopType.ADMIN;
+    }
+
+    public double getUnitaryBuyPrice() {
+        return this.buyPrice / this.buyAmount;
     }
 
     @SuppressWarnings("deprecation")
@@ -83,11 +88,11 @@ public class Shop {
         if (!validSell && !validBuy) return;
 
         if (validSell) {
-            sellLine.append("§aC: §0").append(sellAmount).append(" / ").append(String.format("%.2f", sellPrice)).append("¢");
+            sellLine.append("§aC: §0").append(sellAmount).append(" / ").append(String.format("%.2f", sellPrice));
         }
 
         if (validBuy) {
-            buyLine.append("§cV: §0").append(buyAmount).append(" / ").append(String.format("%.2f", buyPrice)).append("¢");
+            buyLine.append("§cV: §0").append(buyAmount).append(" / ").append(String.format("%.2f", buyPrice));
         }
 
         Sign sign = (Sign) signState;
@@ -157,8 +162,13 @@ public class Shop {
 
         player.getInventory().removeItem(itemStack);
 
-        String message = "§aVocê vendeu " + amount + " " + ItemName.valueOf(itemStack) + " por " + String.format("%.2f", finalPrice) + " coins.";
+        String message = String.format("§aVocê vendeu %d %s por %.2f coins.", amount, ItemName.valueOf(itemStack), finalPrice);
         player.sendMessage(message);
+
+        if (this.isAdminShop()) {
+            AdminShopBuyEvent adminShopBuyEvent = new AdminShopBuyEvent(this, player, amount);
+            Bukkit.getPluginManager().callEvent(adminShopBuyEvent);
+        }
     }
 
     public void breakSign() {
@@ -167,7 +177,7 @@ public class Shop {
         this.getShopSign().breakNaturally();
     }
 
-    private Block getShopSign() {
+    public Block getShopSign() {
         Block block = Bukkit.getWorld(this.location.getWorldName()).getBlockAt(this.location.getX(), this.location.getY(), this.location.getZ());
         if (!(block.getState() instanceof Sign)) return null;
         return block;

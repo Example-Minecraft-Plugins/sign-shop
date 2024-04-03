@@ -1,10 +1,13 @@
 package me.davipccunha.tests.signshop.listener;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import me.davipccunha.tests.signshop.SignShopPlugin;
 import me.davipccunha.tests.signshop.api.model.Shop;
 import me.davipccunha.tests.signshop.api.model.ShopLocation;
 import me.davipccunha.tests.signshop.api.model.ShopType;
+import me.davipccunha.tests.signshop.cache.RedisConnector;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -17,6 +20,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Sign;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Pipeline;
+import redis.clients.jedis.Response;
 
 @RequiredArgsConstructor
 public class SignChangeListener implements Listener {
@@ -42,17 +48,17 @@ public class SignChangeListener implements Listener {
         if (isWallSign && !(isAttachedToChest || isAdminShop)) return;
         if (!(lines[0].equalsIgnoreCase("[Loja]") || isAdminShop)) return;
 
-        if (lines[1].isEmpty() || (lines[2].isEmpty() && lines[3].isEmpty())) {
-            cancelOperation(player, block, "§cPreencha todos os campos.");
+        if (lines[1].isEmpty()) {
+            cancelOperation(player, block, "§cPreencha o ID do item.");
+            return;
+        }
+
+        if (lines[2].isEmpty() && lines[3].isEmpty()) {
+            cancelOperation(player, block, "§cA loja precisa comprar ou vender.");
             return;
         }
 
         this.createShop(player, block, lines, isAdminShop);
-    }
-
-    private void cancelOperation(Player player, Block block, String message) {
-        player.sendMessage(message);
-        block.breakNaturally();
     }
 
     private double[] getFullID(String line) {
@@ -86,6 +92,31 @@ public class SignChangeListener implements Listener {
         return new double[] { amount, price };
     }
 
+    private double getUnitaryBuyPrice(int id, short data) {
+        final RedisConnector redisConnector = new RedisConnector("localhost", 6379, "davi123");
+        JsonParser parser = new JsonParser();
+
+        try (Jedis jedis = redisConnector.getJedis()) {
+            Pipeline pipeline = jedis.pipelined();
+            Response<String> response = pipeline.hget("products", id + ":" + data);
+            pipeline.sync();
+
+            if (response == null || response.get() == null) return 0;
+
+            JsonObject json = parser.parse(response.get()).getAsJsonObject();
+
+            return json.get("buyPrice").getAsDouble();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    private void cancelOperation(Player player, Block block, String message) {
+        player.sendMessage(message);
+        block.breakNaturally();
+    }
+
     private void createShop(Player player, Block block, String[] lines, boolean isAdminShop) {
         final int id = (int) this.getFullID(lines[1])[0];
         final short data = (short) this.getFullID(lines[1])[1];
@@ -99,12 +130,20 @@ public class SignChangeListener implements Listener {
         double[] sellInfo = this.getSeparateInfo(lines[2]);
 
         final int sellAmount = (int) sellInfo[0];
-        final double sellPrice = sellInfo[1];
+        double sellPrice = sellInfo[1];
 
         double[] buyInfo = this.getSeparateInfo(lines[3]);
 
         final int buyAmount = (int) buyInfo[0];
-        final double buyPrice = buyInfo[1];
+        double buyPrice = buyInfo[1];
+
+        if (isAdminShop) {
+            double unitaryBuyPrice = this.getUnitaryBuyPrice(id, data);
+            if (unitaryBuyPrice != 0) {
+                if (buyPrice == 0 && buyAmount != 0)  buyPrice = unitaryBuyPrice * buyAmount;
+                if (sellPrice == 0 && sellAmount != 0) sellPrice = buyPrice * 1.3;
+            }
+        }
 
         if ((sellAmount != 0 && sellPrice == 0) || (buyAmount != 0 && buyPrice == 0)) {
             cancelOperation(player, block, "§cO preço não pode ser 0.");
