@@ -5,6 +5,7 @@ import me.davipccunha.tests.signshop.api.model.ShopLocation;
 import me.davipccunha.tests.signshop.util.serializer.ShopLocationSerializer;
 import me.davipccunha.tests.signshop.util.serializer.ShopSerializer;
 import org.bukkit.Location;
+import org.bukkit.configuration.file.FileConfiguration;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.Response;
@@ -14,12 +15,18 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ShopCache {
-    private final RedisConnector redisConnector = new RedisConnector("localhost", 6379, "davi123");
+    private final String redisKey;
+    private final RedisConnector redisConnector;
+
+    public ShopCache(FileConfiguration config, String redisKey) {
+        this.redisKey = redisKey;
+        this.redisConnector = new RedisConnector(config);
+    }
 
     public void add(Shop shop) {
         try (Jedis jedis = redisConnector.getJedis()) {
             final Pipeline pipeline = jedis.pipelined();
-            pipeline.hset("shops", ShopLocationSerializer.serialize(shop.getLocation()), ShopSerializer.serialize(shop));
+            pipeline.hset(this.redisKey, ShopLocationSerializer.serialize(shop.getLocation()), ShopSerializer.serialize(shop));
             pipeline.sync();
 
         } catch (Exception e) {
@@ -31,7 +38,7 @@ public class ShopCache {
         if (this.has(shopLocation)) {
             try (Jedis jedis = redisConnector.getJedis()) {
                 final Pipeline pipeline = jedis.pipelined();
-                pipeline.hdel("shops", ShopLocationSerializer.serialize(shopLocation));
+                pipeline.hdel(this.redisKey, ShopLocationSerializer.serialize(shopLocation));
                 pipeline.sync();
 
             } catch (Exception e) {
@@ -48,7 +55,7 @@ public class ShopCache {
     public boolean has(ShopLocation shopLocation) {
         try (Jedis jedis = redisConnector.getJedis()) {
             Pipeline pipeline = jedis.pipelined();
-            Response<Boolean> response = pipeline.hexists("shops", ShopLocationSerializer.serialize(shopLocation));
+            Response<Boolean> response = pipeline.hexists(this.redisKey, ShopLocationSerializer.serialize(shopLocation));
             pipeline.sync();
 
             if (response == null || response.get() == null) return false;
@@ -68,7 +75,7 @@ public class ShopCache {
     public Shop get(ShopLocation shopLocation) {
         try (Jedis jedis = redisConnector.getJedis()) {
             Pipeline pipeline = jedis.pipelined();
-            Response<String> response = pipeline.hget("shops", ShopLocationSerializer.serialize(shopLocation));
+            Response<String> response = pipeline.hget(this.redisKey, ShopLocationSerializer.serialize(shopLocation));
             pipeline.sync();
 
             if (response == null || response.get() == null) return null;
@@ -83,7 +90,7 @@ public class ShopCache {
     public Collection<Shop> getShops() {
         try (Jedis jedis = redisConnector.getJedis()) {
             Pipeline pipeline = jedis.pipelined();
-            Response<Map<String, String>> response = pipeline.hgetAll("shops");
+            Response<Map<String, String>> response = pipeline.hgetAll(this.redisKey);
             pipeline.sync();
 
             if (response == null || response.get() == null) return null;

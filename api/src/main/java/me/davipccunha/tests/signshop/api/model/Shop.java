@@ -4,11 +4,13 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import me.davipccunha.tests.economy.api.EconomyAPI;
-import me.davipccunha.tests.economy.api.EconomyType;
 import me.davipccunha.tests.signshop.api.event.AdminShopBuyEvent;
+import me.davipccunha.tests.signshop.api.util.ItemName;
 import org.bukkit.Bukkit;
-import org.bukkit.block.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Chest;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -27,6 +29,7 @@ public class Shop {
 
     private final ShopType type;
     private final String owner;
+    private ShopConfig shopConfig;
 
     public void setSellPrice(double sellPrice) {
         this.sellPrice = sellPrice;
@@ -108,7 +111,7 @@ public class Shop {
         sign.update(true, true);
     }
 
-    public void sell(EconomyAPI api, Player player, int amount) {
+    public void sell(Player player, int amount) {
         if (amount <= 0) return;
 
         ItemStack itemStack = this.getItemStack().clone();
@@ -117,27 +120,18 @@ public class Shop {
         final double unitaryPrice = this.getSellPrice() / this.getSellAmount();
         final double finalPrice = amount * unitaryPrice;
 
-        double balance = api.getBalance(player.getName(), EconomyType.COINS);
-
-        if (balance < finalPrice) {
-            player.sendMessage("§cVocê não tem coins suficientes.");
-            return;
-        }
-
-        api.removeBalance(player.getName(), EconomyType.COINS, finalPrice);
-
-        if (this.type == ShopType.PLAYER) {
-            api.addBalance(this.owner, EconomyType.COINS, finalPrice);
+        if (this.type == ShopType.PLAYER)
             this.getInventory().removeItem(itemStack);
-        }
 
         player.getInventory().addItem(itemStack);
 
-        String message = "§aVocê comprou " + amount + " " + ItemName.valueOf(itemStack) + " por " + String.format("%.2f", finalPrice) + " coins.";
+        String message = String.format("§aVocê comprou %d %s por %.2f coins.",
+                amount, ItemName.valueOf(itemStack), finalPrice);
+
         player.sendMessage(message);
     }
 
-    public void buy(EconomyAPI api, Player player, int amount) {
+    public void buy(Player player, int amount) {
         if (amount <= 0) return;
 
         ItemStack itemStack = this.getItemStack().clone();
@@ -146,23 +140,16 @@ public class Shop {
         final double unitaryPrice = this.getBuyPrice() / this.getBuyAmount();
         final double finalPrice = amount * unitaryPrice;
 
-        if (this.type == ShopType.PLAYER) {
-            double balance = api.getBalance(this.owner, EconomyType.COINS);
-
-            if (balance < finalPrice) {
-                player.sendMessage("§cO dono da loja não tem coins suficientes.");
-                return;
-            }
-
-            api.removeBalance(this.owner, EconomyType.COINS, finalPrice);
+        if (this.type == ShopType.PLAYER)
             this.getInventory().addItem(itemStack);
-        }
 
-        api.addBalance(player.getName(), EconomyType.COINS, finalPrice);
-
+        // We must reset the ItemStack's amount because Inventory#addItem() modifies it
+        itemStack.setAmount(amount);
         player.getInventory().removeItem(itemStack);
 
-        String message = String.format("§aVocê vendeu %d %s por %.2f coins.", amount, ItemName.valueOf(itemStack), finalPrice);
+        String message = String.format("§aVocê vendeu %d %s por %.2f coins.",
+                amount, ItemName.valueOf(itemStack), finalPrice);
+
         player.sendMessage(message);
 
         if (this.isAdminShop()) {
@@ -181,5 +168,11 @@ public class Shop {
         Block block = Bukkit.getWorld(this.location.getWorldName()).getBlockAt(this.location.getX(), this.location.getY(), this.location.getZ());
         if (!(block.getState() instanceof Sign)) return null;
         return block;
+    }
+
+    public void sendNotification(String message) {
+        Player player = Bukkit.getPlayer(this.owner);
+        if (player != null && this.shopConfig.isNotificationsEnabled())
+            player.sendMessage(message);
     }
 }

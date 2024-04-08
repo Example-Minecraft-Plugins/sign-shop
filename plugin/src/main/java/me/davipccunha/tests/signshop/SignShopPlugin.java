@@ -14,7 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 @Getter
 public class SignShopPlugin extends JavaPlugin {
-    private final ShopCache shopCache = new ShopCache();
+    private ShopCache shopCache;
     private EconomyAPI economyAPI;
 
     @Override
@@ -30,6 +30,8 @@ public class SignShopPlugin extends JavaPlugin {
 
     private void init() {
         saveDefaultConfig();
+        this.shopCache = new ShopCache(this.getConfig(), "shops");
+
         registerListeners(
                 new SignChangeListener(this),
                 new BlockBreakListener(this),
@@ -39,7 +41,8 @@ public class SignShopPlugin extends JavaPlugin {
                 new EntityChangeBlockListener(this),
                 new BlockPlaceListener(this),
                 new BlockPistonListener(this),
-                new BlockFadeListener(this)
+                new BlockFadeListener(this),
+                new InventoryClickListener(this)
         );
 
         Bukkit.getServicesManager().register(SignShopAPI.class, new SignShopProvider(shopCache), this, ServicePriority.Normal);

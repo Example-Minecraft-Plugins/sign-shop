@@ -1,5 +1,6 @@
 package me.davipccunha.tests.signshop.cache;
 
+import org.bukkit.configuration.file.FileConfiguration;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -10,6 +11,10 @@ public class RedisConnector {
     public RedisConnector(String host, int port, String password) {
         flush();
         this.pool = new JedisPool(defaultPoolConfig(), host, port, 0, password);
+    }
+
+    public RedisConnector(FileConfiguration config) {
+        this(config.getString("redis.host"), config.getInt("redis.port"), config.getString("redis.password"));
     }
 
     public Jedis getJedis() {

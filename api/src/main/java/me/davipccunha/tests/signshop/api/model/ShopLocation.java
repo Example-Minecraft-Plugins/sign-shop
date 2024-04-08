@@ -36,4 +36,13 @@ public class ShopLocation {
     public String toString() {
         return worldName + " @ (" + x + ", " + y + ", " + z + ")";
     }
+
+    public String serialize() {
+        return worldName + ";" + x + ";" + y + ";" + z;
+    }
+
+    public static ShopLocation fromString(String serialized) {
+        String[] parts = serialized.split(";");
+        return new ShopLocation(parts[0], Integer.parseInt(parts[1]), Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
+    }
 }

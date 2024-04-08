@@ -5,6 +5,7 @@ import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import me.davipccunha.tests.signshop.SignShopPlugin;
 import me.davipccunha.tests.signshop.api.model.Shop;
+import me.davipccunha.tests.signshop.api.model.ShopConfig;
 import me.davipccunha.tests.signshop.api.model.ShopLocation;
 import me.davipccunha.tests.signshop.api.model.ShopType;
 import me.davipccunha.tests.signshop.cache.RedisConnector;
@@ -93,7 +94,7 @@ public class SignChangeListener implements Listener {
     }
 
     private double getUnitaryBuyPrice(int id, short data) {
-        final RedisConnector redisConnector = new RedisConnector("localhost", 6379, "davi123");
+        final RedisConnector redisConnector = new RedisConnector(plugin.getConfig());
         JsonParser parser = new JsonParser();
 
         try (Jedis jedis = redisConnector.getJedis()) {
@@ -160,12 +161,14 @@ public class SignChangeListener implements Listener {
             return;
         }
 
-        String owner = player.getName();
+        final String owner = player.getName();
 
-        ShopLocation shopLocation = new ShopLocation(block.getLocation());
-        Shop shop = isAdminShop ?
-                new Shop(shopLocation, id, data, sellAmount, buyAmount, sellPrice, buyPrice, ShopType.ADMIN, null) :
-                new Shop(shopLocation, id, data, sellAmount, buyAmount, sellPrice, buyPrice, ShopType.PLAYER, owner);
+        final ShopLocation shopLocation = new ShopLocation(block.getLocation());
+        final ShopConfig defaultConfig = new ShopConfig(true, false);
+
+        final Shop shop = isAdminShop ?
+                new Shop(shopLocation, id, data, sellAmount, buyAmount, sellPrice, buyPrice, ShopType.ADMIN, null, defaultConfig) :
+                new Shop(shopLocation, id, data, sellAmount, buyAmount, sellPrice, buyPrice, ShopType.PLAYER, owner, defaultConfig);
 
         Bukkit.getScheduler().runTaskLater(plugin, shop::updateSign, 2);
 

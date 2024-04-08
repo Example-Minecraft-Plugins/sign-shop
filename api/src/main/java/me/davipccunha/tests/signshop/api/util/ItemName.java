@@ -1,4 +1,4 @@
-package me.davipccunha.tests.signshop.api.model;
+package me.davipccunha.tests.signshop.api.util;
 
 
 import org.bukkit.Material;
