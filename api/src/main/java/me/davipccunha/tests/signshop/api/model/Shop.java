@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import me.davipccunha.tests.economy.api.util.EconomyFormatter;
 import me.davipccunha.tests.signshop.api.event.AdminShopBuyEvent;
 import me.davipccunha.tests.signshop.api.util.ItemName;
 import org.bukkit.Bukkit;
@@ -91,11 +92,11 @@ public class Shop {
         if (!validSell && !validBuy) return;
 
         if (validSell) {
-            sellLine.append("§aC: §0").append(sellAmount).append(" / ").append(String.format("%.2f", sellPrice));
+            sellLine.append("§aC: §0").append(sellAmount).append(" / ").append(EconomyFormatter.suffixFormat(sellPrice));
         }
 
         if (validBuy) {
-            buyLine.append("§cV: §0").append(buyAmount).append(" / ").append(String.format("%.2f", buyPrice));
+            buyLine.append("§cV: §0").append(buyAmount).append(" / ").append(EconomyFormatter.suffixFormat(buyPrice));
         }
 
         Sign sign = (Sign) signState;
@@ -125,8 +126,8 @@ public class Shop {
 
         player.getInventory().addItem(itemStack);
 
-        String message = String.format("§aVocê comprou %d %s por %.2f coins.",
-                amount, ItemName.valueOf(itemStack), finalPrice);
+        String message = String.format("§aVocê comprou %d %s por %s coins.",
+                amount, ItemName.valueOf(itemStack), EconomyFormatter.suffixFormat(finalPrice));
 
         player.sendMessage(message);
     }
@@ -147,8 +148,8 @@ public class Shop {
         itemStack.setAmount(amount);
         player.getInventory().removeItem(itemStack);
 
-        String message = String.format("§aVocê vendeu %d %s por %.2f coins.",
-                amount, ItemName.valueOf(itemStack), finalPrice);
+        String message = String.format("§aVocê vendeu %d %s por %s coins.",
+                amount, ItemName.valueOf(itemStack), EconomyFormatter.suffixFormat(finalPrice));
 
         player.sendMessage(message);
 
