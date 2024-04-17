@@ -162,11 +162,11 @@ public class Shop {
     public void breakSign() {
         Block sign = this.getShopSign();
         if (sign == null) return;
-        this.getShopSign().breakNaturally();
+        sign.breakNaturally();
     }
 
     public Block getShopSign() {
-        Block block = Bukkit.getWorld(this.location.getWorldName()).getBlockAt(this.location.getX(), this.location.getY(), this.location.getZ());
+        Block block = Bukkit.getWorld(this.location.getWorldName()).getBlockAt(this.location.getX(), this.location.getY(), this.location.getZ()); // TODO: Check if world is null
         if (!(block.getState() instanceof Sign)) return null;
         return block;
     }
