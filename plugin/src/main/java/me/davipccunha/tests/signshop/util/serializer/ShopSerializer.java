@@ -4,13 +4,14 @@ import com.google.gson.Gson;
 import me.davipccunha.tests.signshop.api.model.Shop;
 
 public class ShopSerializer {
+
+    private static final Gson GSON = new Gson();
+    
     public static String serialize(Shop shop) {
-        Gson gson = new Gson();
-        return gson.toJson(shop);
+        return GSON.toJson(shop);
     }
 
     public static Shop deserialize(String serialized) {
-        Gson gson = new Gson();
-        return gson.fromJson(serialized, Shop.class);
+        return GSON.fromJson(serialized, Shop.class);
     }
 }
