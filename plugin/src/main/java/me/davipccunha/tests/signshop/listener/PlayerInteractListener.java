@@ -9,7 +9,7 @@ import me.davipccunha.tests.signshop.api.model.ShopLocation;
 import me.davipccunha.tests.signshop.api.model.ShopType;
 import me.davipccunha.tests.signshop.cache.ShopCache;
 import me.davipccunha.tests.signshop.factory.ShopConfigGUIFactory;
-import me.davipccunha.tests.signshop.util.InventoryUtil;
+import me.davipccunha.utils.inventory.InventoryUtil;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;

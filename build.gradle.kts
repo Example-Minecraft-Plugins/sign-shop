@@ -21,11 +21,13 @@ subprojects {
     }
 
     dependencies {
-        compileOnly("org.projectlombok:lombok:1.18.28")
-        annotationProcessor("org.projectlombok:lombok:1.18.28")
+        compileOnly("org.projectlombok:lombok:1.18.32")
+        annotationProcessor("org.projectlombok:lombok:1.18.32")
 
         compileOnly(fileTree("D:\\Minecraft Dev\\artifacts\\") { include("economy-api.jar") })
         compileOnly(fileTree("/../libs") { include("*.jar") })
+
+        implementation(fileTree("D:\\Minecraft Dev\\artifacts\\") { include("bukkit-utils.jar") })
     }
 
     tasks.withType<JavaCompile> {

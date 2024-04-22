@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.davipccunha.tests.economy.api.util.EconomyFormatter;
 import me.davipccunha.tests.signshop.api.event.AdminShopBuyEvent;
-import me.davipccunha.tests.signshop.api.util.ItemName;
+import me.davipccunha.utils.item.ItemName;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;

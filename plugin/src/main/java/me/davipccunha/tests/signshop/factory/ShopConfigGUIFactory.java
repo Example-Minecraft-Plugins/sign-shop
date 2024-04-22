@@ -1,8 +1,8 @@
 package me.davipccunha.tests.signshop.factory;
 
 import me.davipccunha.tests.signshop.api.model.Shop;
-import me.davipccunha.tests.signshop.api.util.ItemName;
-import me.davipccunha.tests.signshop.api.util.NBTHandler;
+import me.davipccunha.utils.inventory.InteractiveInventory;
+import me.davipccunha.utils.item.ItemName;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -23,28 +23,35 @@ public class ShopConfigGUIFactory {
         ItemMeta signMeta = sign.getItemMeta();
         signMeta.setDisplayName("§r§eInformações da Loja");
 
-        final List<String> shopInfolore = Arrays.asList(
+        final List<String> shopInfoLore = Arrays.asList(
                 "§7 * Dono: §f" + shop.getOwner(),
                 "§7 * Item: §f" + ItemName.valueOf(shop.getItemStack()),
                 String.format("§7 * A loja compra: §f%d por %.2f coins", shop.getBuyAmount(), shop.getBuyPrice()),
                 String.format("§7 * A loja vende: §f%d por %.2f coins", shop.getSellAmount(), shop.getSellPrice())
         );
 
-        signMeta.setLore(shopInfolore);
+        signMeta.setLore(shopInfoLore);
         sign.setItemMeta(signMeta);
 
-        ItemStack partialSelling = createConfigItem(
+        HashMap<String, String> partialSellingTags = new HashMap<>() {{
+            put("action", "togglePartialSelling");
+            put("shopLocation", shopLocation);
+        }};
+
+        final ItemStack partialSelling = InteractiveInventory.createToggleItem(
                 shop.getShopConfig().isPartialSellingAllowed(),
-                "togglePartialSelling",
-                shopLocation,
+                partialSellingTags,
                 "§r§eVenda Parcial",
                 "§f * Permite a venda de quantidades inferiores à predefinida");
 
-        
-        ItemStack notifications = createConfigItem(
+        final HashMap<String, String> notificationsTags = new HashMap<>() {{
+            put("action", "toggleNotifications");
+            put("shopLocation", shopLocation);
+        }};
+
+        ItemStack notifications = InteractiveInventory.createToggleItem(
                 shop.getShopConfig().isNotificationsEnabled(),
-                "toggleNotifications",
-                shopLocation,
+                notificationsTags,
                 "§r§eNotificações",
                 "§f * Envia mensagens de transações e estoque da loja");
 
@@ -57,7 +64,7 @@ public class ShopConfigGUIFactory {
                 "§f * Deleta esta loja"
         );
 
-        ItemStack deleteShop = createActionItem(
+        ItemStack deleteShop = InteractiveInventory.createActionItem(
                 new ItemStack(Material.BARRIER),
                 deleteShopTags,
                 "§r§cDeletar Loja",
@@ -69,34 +76,5 @@ public class ShopConfigGUIFactory {
         inventory.setItem(24, deleteShop);
         
         return inventory;
-    }
-
-    private static ItemStack createConfigItem(boolean config, String action, String shopLocation, String name, String description) {
-        ItemStack wool = new ItemStack(Material.WOOL, 1, (short) (config ? 5 : 14));
-
-        final HashMap<String, String> tags = new HashMap<>() {{
-           put("action", action);
-           put("shopLocation", shopLocation);
-        }};
-
-        final List<String> lore = Arrays.asList(
-                description,
-                "§7 Clique para " + (config ? "§cDesativar" : "§aAtivar")
-        );
-
-        return createActionItem(wool, tags, name, lore);
-    }
-
-    private static ItemStack createActionItem(ItemStack item, HashMap<String, String> NBTTags, String name, List<String> lore) {
-
-        ItemStack actionItem = NBTHandler.addNBT(item, NBTTags);
-
-        ItemMeta actionItemMeta = actionItem.getItemMeta();
-        actionItemMeta.setDisplayName(name);
-
-        actionItemMeta.setLore(lore);
-        actionItem.setItemMeta(actionItemMeta);
-
-        return actionItem;
     }
 }
