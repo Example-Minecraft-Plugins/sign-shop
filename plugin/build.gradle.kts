@@ -38,5 +38,5 @@ bukkit {
     author = "davipccunha"
     prefix = "Sign Shop" // As shown in console
     apiVersion = "1.8"
-    softDepend = listOf("economy")
+    depend = listOf("economy", "bukkit-utils")
 }

@@ -8,7 +8,7 @@ import me.davipccunha.tests.signshop.api.model.Shop;
 import me.davipccunha.tests.signshop.api.model.ShopConfig;
 import me.davipccunha.tests.signshop.api.model.ShopLocation;
 import me.davipccunha.tests.signshop.api.model.ShopType;
-import me.davipccunha.tests.signshop.cache.RedisConnector;
+import me.davipccunha.utils.cache.RedisConnector;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -39,7 +39,6 @@ public class SignChangeListener implements Listener {
 
         final boolean isWallSign = ((Sign) block.getState().getData()).isWallSign();
         final boolean isChestBelow = block.getLocation().clone().add(0, -1, 0).getBlock().getState() instanceof Chest;
-
 
         final BlockFace signBack = ((Sign) block.getState().getData()).getAttachedFace();
         final boolean isAttachedToChest = block.getRelative(signBack).getState() instanceof Chest;
@@ -94,7 +93,7 @@ public class SignChangeListener implements Listener {
     }
 
     private double getUnitaryBuyPrice(int id, short data) {
-        final RedisConnector redisConnector = new RedisConnector(plugin.getConfig());
+        final RedisConnector redisConnector = new RedisConnector();
         JsonParser parser = new JsonParser();
 
         try (Jedis jedis = redisConnector.getJedis()) {

@@ -27,7 +27,7 @@ subprojects {
         compileOnly(fileTree("D:\\Minecraft Dev\\artifacts\\") { include("economy-api.jar") })
         compileOnly(fileTree("/../libs") { include("*.jar") })
 
-        implementation(fileTree("D:\\Minecraft Dev\\artifacts\\") { include("bukkit-utils.jar") })
+        compileOnly(fileTree("D:\\Local Minecraft Server\\plugins") { include("bukkit-utils.jar") })
     }
 
     tasks.withType<JavaCompile> {

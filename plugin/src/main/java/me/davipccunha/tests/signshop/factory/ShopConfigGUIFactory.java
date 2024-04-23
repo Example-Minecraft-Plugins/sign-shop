@@ -10,8 +10,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ShopConfigGUIFactory {
     public static Inventory createShopConfigGUI(Shop shop) {
@@ -33,10 +33,10 @@ public class ShopConfigGUIFactory {
         signMeta.setLore(shopInfoLore);
         sign.setItemMeta(signMeta);
 
-        HashMap<String, String> partialSellingTags = new HashMap<>() {{
-            put("action", "togglePartialSelling");
-            put("shopLocation", shopLocation);
-        }};
+        final Map<String, String> partialSellingTags = Map.of(
+            "action", "togglePartialSelling",
+            "shopLocation", shopLocation
+        );
 
         final ItemStack partialSelling = InteractiveInventory.createToggleItem(
                 shop.getShopConfig().isPartialSellingAllowed(),
@@ -44,10 +44,10 @@ public class ShopConfigGUIFactory {
                 "§r§eVenda Parcial",
                 "§f * Permite a venda de quantidades inferiores à predefinida");
 
-        final HashMap<String, String> notificationsTags = new HashMap<>() {{
-            put("action", "toggleNotifications");
-            put("shopLocation", shopLocation);
-        }};
+        final Map<String, String> notificationsTags = Map.of(
+            "action", "toggleNotifications",
+            "shopLocation", shopLocation
+        );
 
         ItemStack notifications = InteractiveInventory.createToggleItem(
                 shop.getShopConfig().isNotificationsEnabled(),
@@ -55,10 +55,10 @@ public class ShopConfigGUIFactory {
                 "§r§eNotificações",
                 "§f * Envia mensagens de transações e estoque da loja");
 
-        final HashMap<String, String> deleteShopTags = new HashMap<>() {{
-            put("action", "deleteShop");
-            put("shopLocation", shopLocation);
-        }};
+        final Map<String, String> deleteShopTags = Map.of(
+            "action", "deleteShop",
+            "shopLocation", shopLocation
+        );
 
         final List<String> deleteShopLore = List.of(
                 "§f * Deleta esta loja"

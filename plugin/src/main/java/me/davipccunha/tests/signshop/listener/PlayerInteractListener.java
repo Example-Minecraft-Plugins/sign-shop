@@ -41,6 +41,13 @@ public class PlayerInteractListener implements Listener {
         Player player = event.getPlayer();
 
         if (action == Action.LEFT_CLICK_BLOCK) {
+            if (shop.getType() == ShopType.PLAYER && player.getName().equals(shop.getOwner())) {
+                shop.breakSign();
+                cache.remove(shop.getLocation());
+                player.sendMessage("§cLoja deletada com sucesso.");
+                return;
+                }
+
             if (shop.getBuyAmount() <= 0 || shop.getBuyPrice() <= 0) {
                 player.sendMessage("§cEsta loja não compra itens.");
                 return;
@@ -72,13 +79,6 @@ public class PlayerInteractListener implements Listener {
             }
 
             if (shop.getType() == ShopType.PLAYER) {
-                if (player.getName().equals(shop.getOwner())) {
-                    shop.breakSign();
-                    cache.remove(shop.getLocation());
-                    player.sendMessage("§cLoja deletada com sucesso.");
-                    return;
-                }
-
                 final int missingAmount = InventoryUtil.getMissingAmount((shop.getInventory()), shop.getItemStack());
 
                 if (missingAmount <= 0) {
