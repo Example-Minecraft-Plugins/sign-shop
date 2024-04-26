@@ -61,7 +61,7 @@ public class ShopConfigGUIFactory {
         );
 
         final List<String> deleteShopLore = List.of(
-                "§f * Deleta esta loja"
+                "§7 Clique para deletar esta loja"
         );
 
         ItemStack deleteShop = InteractiveInventory.createActionItem(
