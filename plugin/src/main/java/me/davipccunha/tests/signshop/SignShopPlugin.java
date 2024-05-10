@@ -47,7 +47,7 @@ public class SignShopPlugin extends JavaPlugin {
 
         Bukkit.getServicesManager().register(SignShopAPI.class, new SignShopProvider(shopCache), this, ServicePriority.Normal);
 
-        economyAPI = Bukkit.getServicesManager().load(EconomyAPI.class);
+        this.economyAPI = Bukkit.getServicesManager().load(EconomyAPI.class);
     }
 
     private void registerListeners(Listener... listeners) {
