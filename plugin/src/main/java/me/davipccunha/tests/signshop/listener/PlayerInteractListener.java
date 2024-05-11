@@ -26,22 +26,22 @@ public class PlayerInteractListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     private void onPlayerInteract(PlayerInteractEvent event) {
-        Action action = event.getAction();
+        final Action action = event.getAction();
         if (action != Action.LEFT_CLICK_BLOCK && action != Action.RIGHT_CLICK_BLOCK) return;
 
-        Block block = event.getClickedBlock();
+        final Block block = event.getClickedBlock();
         if (block == null) return;
         if (!(block.getState() instanceof Sign)) return;
 
         final ShopCache cache = plugin.getShopCache();
 
-        Shop shop = cache.get(new ShopLocation(block.getLocation()));
+        final Shop shop = cache.get(new ShopLocation(block.getLocation()));
         if (shop == null) return;
 
-        Player player = event.getPlayer();
+        final Player player = event.getPlayer();
 
         if (action == Action.LEFT_CLICK_BLOCK) {
-            if (shop.getType() == ShopType.PLAYER && player.getName().equals(shop.getOwner())) {
+            if (shop.getType() == ShopType.PLAYER && (player.getName().equals(shop.getOwner()) || player.hasPermission("signshop.admin.break"))) {
                 shop.breakSign();
                 cache.remove(shop.getLocation());
                 player.sendMessage("§cLoja deletada com sucesso.");

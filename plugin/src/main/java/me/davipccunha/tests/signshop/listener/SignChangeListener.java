@@ -42,7 +42,7 @@ public class SignChangeListener implements Listener {
 
         final BlockFace signBack = ((Sign) block.getState().getData()).getAttachedFace();
         final boolean isAttachedToChest = block.getRelative(signBack).getState() instanceof Chest;
-        final boolean isAdminShop = lines[0].equals("[AdminShop]") && player.hasPermission("signshop.admin");
+        final boolean isAdminShop = lines[0].equals("[AdminShop]") && player.hasPermission("signshop.admin.create");
 
         if (!isWallSign && !(isChestBelow || isAdminShop)) return;
         if (isWallSign && !(isAttachedToChest || isAdminShop)) return;

@@ -21,7 +21,7 @@ public class BlockBreakListener implements Listener {
         if (block == null) return;
 
         final ShopCache cache = plugin.getShopCache();
-        ShopLocation shopLocation = new ShopLocation(block.getLocation());
+        final ShopLocation shopLocation = new ShopLocation(block.getLocation());
 
         if (cache.has(shopLocation)) event.setCancelled(true);
 

@@ -36,21 +36,21 @@ public class InventoryClickListener implements Listener {
         if (player == null) return;
 
         ItemStack clickedItem = event.getCurrentItem();
-        String action = NBTHandler.getNBT(clickedItem, "action");
-        String shopLocation = NBTHandler.getNBT(clickedItem, "shopLocation");
+        final String action = NBTHandler.getNBT(clickedItem, "action");
+        final String shopLocation = NBTHandler.getNBT(clickedItem, "shopLocation");
 
         if (action == null || shopLocation == null) return;
 
-        ShopCache cache = plugin.getShopCache();
+        final ShopCache cache = plugin.getShopCache();
 
-        ShopLocation location = ShopLocation.fromString(shopLocation);
-        Shop shop = cache.get(location);
+        final ShopLocation location = ShopLocation.fromString(shopLocation);
+        final Shop shop = cache.get(location);
 
         if (shop == null) return;
 
         switch (action) {
             case "togglePartialSelling":
-                boolean currentPartialSelling = shop.getShopConfig().isPartialSellingAllowed();
+                final boolean currentPartialSelling = shop.getShopConfig().isPartialSellingAllowed();
                 shop.getShopConfig().setPartialSellingAllowed(!currentPartialSelling);
                 cache.add(shop);
 
@@ -58,7 +58,7 @@ public class InventoryClickListener implements Listener {
 
                 break;
             case "toggleNotifications":
-                boolean currentNotifications = shop.getShopConfig().isNotificationsEnabled();
+                final boolean currentNotifications = shop.getShopConfig().isNotificationsEnabled();
                 shop.getShopConfig().setNotificationsEnabled(!currentNotifications);
                 cache.add(shop);
 
