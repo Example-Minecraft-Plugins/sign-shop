@@ -31,11 +31,11 @@ public class SignChangeListener implements Listener {
 
     private static final int INVENTORY_MAX_SIZE = 2304;
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     private void onSignChange(SignChangeEvent event) {
-        String[] lines = event.getLines();
-        Player player = event.getPlayer();
-        Block block = event.getBlock();
+        final String[] lines = event.getLines();
+        final Player player = event.getPlayer();
+        final Block block = event.getBlock();
 
         final boolean isWallSign = ((Sign) block.getState().getData()).isWallSign();
         final boolean isChestBelow = block.getLocation().clone().add(0, -1, 0).getBlock().getState() instanceof Chest;

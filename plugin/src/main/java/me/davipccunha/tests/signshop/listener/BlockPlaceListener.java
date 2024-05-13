@@ -12,9 +12,9 @@ import org.bukkit.event.block.BlockPlaceEvent;
 public class BlockPlaceListener implements Listener {
     private final SignShopPlugin plugin;
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.MONITOR)
     private void onBlockPlace(BlockPlaceEvent event) {
-        Block block = event.getBlock();
+        final Block block = event.getBlock();
         if (block == null) return;
 
         // This avoids ghost shops

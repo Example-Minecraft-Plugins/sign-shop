@@ -30,7 +30,7 @@ public class SignShopPlugin extends JavaPlugin {
 
     private void init() {
         saveDefaultConfig();
-        this.shopCache = new ShopCache(this.getConfig(), "shops");
+        this.shopCache = new ShopCache("shops");
 
         registerListeners(
                 new SignChangeListener(this),

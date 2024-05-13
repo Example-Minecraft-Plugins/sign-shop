@@ -6,7 +6,6 @@ import me.davipccunha.tests.signshop.util.serializer.ShopLocationSerializer;
 import me.davipccunha.tests.signshop.util.serializer.ShopSerializer;
 import me.davipccunha.utils.cache.RedisConnector;
 import org.bukkit.Location;
-import org.bukkit.configuration.file.FileConfiguration;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.Response;
@@ -19,7 +18,7 @@ public class ShopCache {
     private final String redisKey;
     private final RedisConnector redisConnector = new RedisConnector();
 
-    public ShopCache(FileConfiguration config, String redisKey) {
+    public ShopCache(String redisKey) {
         this.redisKey = redisKey;
     }
 

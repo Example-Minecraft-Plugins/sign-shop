@@ -7,7 +7,6 @@ import me.davipccunha.tests.signshop.cache.ShopCache;
 import me.davipccunha.tests.signshop.listener.util.IndirectShopDestroyer;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
@@ -15,7 +14,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 public class BlockBreakListener implements Listener {
     private final SignShopPlugin plugin;
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler
     private void onBlockBreak(BlockBreakEvent event) {
         final Block block = event.getBlock();
         if (block == null) return;

@@ -13,12 +13,11 @@ import org.bukkit.event.block.BlockBurnEvent;
 public class BlockBurnListener implements Listener {
     private final SignShopPlugin plugin;
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.MONITOR)
     private void onBlockBurn(BlockBurnEvent event) {
-        Block block = event.getBlock();
+        final Block block = event.getBlock();
         if (block == null) return;
 
-        if (!event.isCancelled())
-            IndirectShopDestroyer.indirectShopDelete(block, plugin.getShopCache());
+        IndirectShopDestroyer.indirectShopDelete(block, plugin.getShopCache());
     }
 }

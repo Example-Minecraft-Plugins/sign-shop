@@ -14,7 +14,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -24,7 +23,7 @@ import org.bukkit.inventory.Inventory;
 public class PlayerInteractListener implements Listener {
     private final SignShopPlugin plugin;
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler
     private void onPlayerInteract(PlayerInteractEvent event) {
         final Action action = event.getAction();
         if (action != Action.LEFT_CLICK_BLOCK && action != Action.RIGHT_CLICK_BLOCK) return;
@@ -41,12 +40,15 @@ public class PlayerInteractListener implements Listener {
         final Player player = event.getPlayer();
 
         if (action == Action.LEFT_CLICK_BLOCK) {
-            if (shop.getType() == ShopType.PLAYER && (player.getName().equals(shop.getOwner()) || player.hasPermission("signshop.admin.break"))) {
+            if (shop.getType() == ShopType.PLAYER
+                    && (player.getName().equals(shop.getOwner()) || player.hasPermission("signshop.admin.break"))
+                    || player.hasPermission("signshop.admin.create")) {
+
                 shop.breakSign();
                 cache.remove(shop.getLocation());
                 player.sendMessage("§cLoja deletada com sucesso.");
                 return;
-                }
+            }
 
             if (shop.getBuyAmount() <= 0 || shop.getBuyPrice() <= 0) {
                 player.sendMessage("§cEsta loja não compra itens.");

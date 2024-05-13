@@ -15,12 +15,11 @@ import java.util.List;
 public class EntityExplodeListener implements Listener {
     private final SignShopPlugin plugin;
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.MONITOR)
     private void onBlockExplode(EntityExplodeEvent event) {
         List<Block> explodedBlocks = event.blockList();
 
         for (Block block : explodedBlocks)
-            if (!event.isCancelled())
-                IndirectShopDestroyer.indirectShopDelete(block, plugin.getShopCache());
+            IndirectShopDestroyer.indirectShopDelete(block, plugin.getShopCache());
     }
 }

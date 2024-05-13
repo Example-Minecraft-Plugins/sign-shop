@@ -16,26 +16,25 @@ import java.util.List;
 public class BlockPistonListener implements Listener {
     private final SignShopPlugin plugin;
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.MONITOR)
     private void onBlockExtendPiston(BlockPistonExtendEvent event) {
         // We check if the piston pushed a block to a ghost shop location
-        Block targetBlock = event.getBlock().getRelative(event.getDirection(), 2);
+        final Block targetBlock = event.getBlock().getRelative(event.getDirection(), 2);
         plugin.getShopCache().remove(targetBlock.getLocation());
 
         // We check if the piston extending will break a shop
         List<Block> affectedBlocks = event.getBlocks();
         for (Block block : affectedBlocks) {
-            if (!event.isCancelled())
-                IndirectShopDestroyer.indirectShopDelete(block, plugin.getShopCache());
+            IndirectShopDestroyer.indirectShopDelete(block, plugin.getShopCache());
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.MONITOR)
     private void onBlockRetractPiston(BlockPistonRetractEvent event) {
         // We check if the piston pulled a block to a ghost shop location
         if (!event.isSticky()) return;
 
-        Block targetBlock = event.getBlock().getRelative(event.getDirection().getOppositeFace());
+        final Block targetBlock = event.getBlock().getRelative(event.getDirection().getOppositeFace());
         plugin.getShopCache().remove(targetBlock.getLocation());
     }
 }
